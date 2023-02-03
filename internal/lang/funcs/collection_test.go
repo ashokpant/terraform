@@ -68,7 +68,11 @@ func TestLength(t *testing.T) {
 		},
 		{
 			cty.UnknownVal(cty.List(cty.Bool)),
-			cty.UnknownVal(cty.Number),
+			cty.UnknownVal(cty.Number).Refine().
+				NotNull().
+				NumberRangeLowerBound(cty.Zero, true).
+				NumberRangeUpperBound(cty.NumberIntVal(math.MaxInt), true).
+				NewValue(),
 		},
 		{
 			cty.DynamicVal,
@@ -117,7 +121,19 @@ func TestLength(t *testing.T) {
 		},
 		{
 			cty.UnknownVal(cty.String),
-			cty.UnknownVal(cty.Number),
+			cty.UnknownVal(cty.Number).Refine().
+				NotNull().
+				NumberRangeLowerBound(cty.Zero, true).
+				NewValue(),
+		},
+		{
+			cty.UnknownVal(cty.String).Refine().
+				StringPrefixFull("ami-").
+				NewValue(),
+			cty.UnknownVal(cty.Number).Refine().
+				NotNull().
+				NumberRangeLowerBound(cty.NumberIntVal(4), true).
+				NewValue(),
 		},
 		{
 			cty.DynamicVal,
